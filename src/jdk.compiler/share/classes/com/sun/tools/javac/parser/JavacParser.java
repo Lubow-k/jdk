@@ -963,7 +963,7 @@ public class JavacParser implements Parser {
         }
         else {
             if (parsedType == null) {
-                boolean var = token.kind == IDENTIFIER && token.name() == names.var;
+                boolean var = token.kind == IDENTIFIER && (token.name() == names.val || token.name() == names.var);
                 e = unannotatedType(allowVar, TYPE | NOLAMBDA);
                 if (var) {
                     e = null;
@@ -1069,7 +1069,7 @@ public class JavacParser implements Parser {
         JCExpression result = term(newmode);
         Name restrictedTypeName = restrictedTypeName(result, !allowVar);
 
-        if (restrictedTypeName != null && (!allowVar || restrictedTypeName != names.var)) {
+        if (restrictedTypeName != null && (!allowVar || (restrictedTypeName != names.var && restrictedTypeName != names.val))) {
             syntaxError(result.pos, Errors.RestrictedTypeNotAllowedHere(restrictedTypeName));
         }
 
@@ -3796,7 +3796,7 @@ public class JavacParser implements Parser {
         if (elemType.hasTag(IDENT)) {
             Name typeName = ((JCIdent) elemType).name;
             if (restrictedTypeNameStartingAtSource(typeName, pos, !compound && localDecl) != null) {
-                if (typeName != names.var) {
+                if (typeName != names.var && typeName != names.val) {
                     reportSyntaxError(elemType.pos, Errors.RestrictedTypeNotAllowedHere(typeName));
                 } else if (type.hasTag(TYPEARRAY) && !compound) {
                     //error - 'var' and arrays
@@ -3832,7 +3832,7 @@ public class JavacParser implements Parser {
     }
 
     Source restrictedTypeNameStartingAtSource(Name name, int pos, boolean shouldWarn) {
-        if (name == names.var) {
+        if (name == names.var || name == names.val) {
             if (Feature.LOCAL_VARIABLE_TYPE_INFERENCE.allowedInSource(source)) {
                 return Source.JDK10;
             } else if (shouldWarn) {
@@ -3931,7 +3931,8 @@ public class JavacParser implements Parser {
         }
 
         return toP(F.at(pos).VarDef(mods, name, type, null,
-                type != null && type.hasTag(IDENT) && ((JCIdent)type).name == names.var));
+                type != null && type.hasTag(IDENT) &&
+                        (((JCIdent)type).name == names.var || ((JCIdent)type).name == names.val)));
     }
 
     /** Resources = Resource { ";" Resources }

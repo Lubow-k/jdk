@@ -2542,7 +2542,7 @@ public class Resolve {
 
     private Symbol checkRestrictedType(DiagnosticPosition pos, Symbol bestSoFar, Name name) {
         if (bestSoFar.kind == TYP || bestSoFar.kind == ABSENT_TYP) {
-            if (allowLocalVariableTypeInference && name.equals(names.var)) {
+            if (allowLocalVariableTypeInference && (name.equals(names.var) || name.equals(names.val))) {
                 bestSoFar = new BadRestrictedTypeError(names.var);
             } else if (name.equals(names.yield)) {
                 if (allowYieldStatement) {
