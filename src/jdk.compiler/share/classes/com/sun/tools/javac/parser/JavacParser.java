@@ -3799,12 +3799,15 @@ public class JavacParser implements Parser {
                 if (typeName != names.var && typeName != names.val) {
                     reportSyntaxError(elemType.pos, Errors.RestrictedTypeNotAllowedHere(typeName));
                 } else if (type.hasTag(TYPEARRAY) && !compound) {
-                    //error - 'var' and arrays
+                    //error - 'var'/'val' and arrays
                     reportSyntaxError(elemType.pos, Errors.RestrictedTypeNotAllowedArray(typeName));
                 } else {
                     declaredUsingVar = true;
+                    if (typeName == names.val) {
+                        mods.flags |= Flags.FINAL;
+                    }
                     if (compound)
-                        //error - 'var' in compound local var decl
+                        //error - 'var'/'val' in compound local var decl
                         reportSyntaxError(elemType.pos, Errors.RestrictedTypeNotAllowedCompound(typeName));
                     startPos = TreeInfo.getStartPos(mods);
                     if (startPos == Position.NOPOS)
@@ -3930,9 +3933,13 @@ public class JavacParser implements Parser {
             name = names.empty;
         }
 
+        boolean isType = type != null && type.hasTag(IDENT);
+        if (isType && ((JCIdent)type).name == names.val) {
+            mods.flags |= Flags.FINAL;
+        }
+
         return toP(F.at(pos).VarDef(mods, name, type, null,
-                type != null && type.hasTag(IDENT) &&
-                        (((JCIdent)type).name == names.var || ((JCIdent)type).name == names.val)));
+                isType && (((JCIdent)type).name == names.var || ((JCIdent)type).name == names.val)));
     }
 
     /** Resources = Resource { ";" Resources }
