@@ -1,0 +1,7 @@
+BasicValTest.java:26:13: compiler.err.cant.infer.local.var.type: name, (compiler.misc.local.cant.infer.null)
+BasicValTest.java:33:9: compiler.err.cant.assign.val.to.var: final, x
+BasicValTest.java:39:9: compiler.err.cant.assign.val.to.var: final, y
+BasicValTest.java:39:13: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.String, int)
+BasicValTest.java:45:13: compiler.err.already.defined: kindname.variable, z, kindname.method, redefinition_test()
+BasicValTest.java:52:45: compiler.err.cant.assign.val.to.var: final, counter
+6 errors

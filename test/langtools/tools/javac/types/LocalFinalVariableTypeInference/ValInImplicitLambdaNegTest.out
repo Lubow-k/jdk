@@ -1,0 +1,5 @@
+ValInImplicitLambdaNegTest.java:11:28: compiler.err.invalid.lambda.parameter.declaration: (compiler.misc.var.and.implicit.not.allowed)
+ValInImplicitLambdaNegTest.java:12:28: compiler.err.invalid.lambda.parameter.declaration: (compiler.misc.var.and.implicit.not.allowed)
+ValInImplicitLambdaNegTest.java:13:28: compiler.err.invalid.lambda.parameter.declaration: (compiler.misc.var.and.explicit.not.allowed)
+ValInImplicitLambdaNegTest.java:15:52: compiler.err.restricted.type.not.allowed.array: val
+4 errors

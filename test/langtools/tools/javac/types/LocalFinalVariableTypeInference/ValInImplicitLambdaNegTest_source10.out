@@ -1,0 +1,5 @@
+- compiler.warn.source.no.system.modules.path: 10, (compiler.misc.source.no.system.modules.path: 10)
+ValInImplicitLambdaNegTest.java:11:36: compiler.err.feature.not.supported.in.source.plural: (compiler.misc.feature.var.syntax.in.implicit.lambda), 10, 11
+ValInImplicitLambdaNegTest.java:15:52: compiler.err.restricted.type.not.allowed.here: val
+2 errors
+1 warning

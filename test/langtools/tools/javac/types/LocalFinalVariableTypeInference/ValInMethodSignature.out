@@ -1,0 +1,2 @@
+ValInMethodSignature.java:10:15: compiler.err.restricted.type.not.allowed.here: val
+1 error

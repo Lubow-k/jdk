@@ -47,10 +47,11 @@ public class VarInstanceMemberTest {
 
     static class JavaSource extends SimpleJavaFileObject {
 
-        final static String sourceStub = "class Test {var v1;}";
+        public String sourceStub;
 
-        public JavaSource() {
+        public JavaSource(String sourceStub) {
             super(URI.create("myfo:/Test.java"), JavaFileObject.Kind.SOURCE);
+            this.sourceStub = sourceStub;
         }
 
         @Override
@@ -61,15 +62,15 @@ public class VarInstanceMemberTest {
     }
 
     public static void main(String[] args) throws Exception {
-        check();
-
+        check("class Test {var v1;}");
+        check("class Test {val v1;}");
     }
 
-    static void check() throws Exception {
+    static void check(String sourceStub) throws Exception {
         final JavaCompiler tool = ToolProvider.getSystemJavaCompiler();
         DiagnosticCollector<JavaFileObject> dc = new DiagnosticCollector<JavaFileObject>();
         JavacTask ct = (JavacTask) tool.getTask(null, null, dc,
-                null, null, Arrays.asList(new JavaSource()));
+                null, null, Arrays.asList(new JavaSource(sourceStub)));
         CompilationUnitTree tree = ct.parse().iterator().next();
 
         ct.analyze();
@@ -84,6 +85,4 @@ public class VarInstanceMemberTest {
             }
         }.scan(tree, null);
     }
-
 }
-
