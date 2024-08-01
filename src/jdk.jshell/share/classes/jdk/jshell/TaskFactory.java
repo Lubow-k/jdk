@@ -823,9 +823,9 @@ class TaskFactory {
             com.sun.tools.javac.parser.Lexer lexer = scannerFactory.newScanner(input, keepDocComments);
             return new JavacParser(this, lexer, keepDocComments, keepLineMap, keepEndPos, parseModuleInfo) {
                 @Override
-                public JCExpression parseType(boolean allowVar, com.sun.tools.javac.util.List<JCTree.JCAnnotation> annotations) {
+                public JCExpression parseType(boolean allowLocalVarsTypeInference, com.sun.tools.javac.util.List<JCTree.JCAnnotation> annotations) {
                     int pos = token.pos;
-                    JCExpression t = super.parseType(allowVar, annotations);
+                    JCExpression t = super.parseType(allowLocalVarsTypeInference, annotations);
                     if (permitIntersectionTypes) {
                         t = parseIntersectionType(pos, t);
                     }

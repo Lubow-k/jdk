@@ -7,7 +7,7 @@ public class BasicValTest {
     void basic_test() {
         // just use 'val'
         // ok
-        val x = 1;
+        val a = 1;
 
 
         // 'val' correct identifier
@@ -18,12 +18,17 @@ public class BasicValTest {
 
         // 'final val' correct, but has no effect (already final)
         // ok
-        final val y = 5.6f;
+        final val b = 5.6f;
 
 
         // 'val' with null
         // error
-        val name = null;
+        val c = null;
+
+
+        // 'val' missing initialization
+        // error
+        val d;
     }
 
     void redefinition_test() {

@@ -952,7 +952,7 @@ public class JavacParser implements Parser {
     /** parses patterns.
      */
     public JCPattern parsePattern(int pos, JCModifiers mods, JCExpression parsedType,
-                                  boolean allowVar, boolean checkGuard) {
+                                  boolean allowLocalVarsTypeInference, boolean checkGuard) {
         JCPattern pattern;
         mods = mods != null ? mods : optFinal(0);
         JCExpression e;
@@ -963,8 +963,8 @@ public class JavacParser implements Parser {
         }
         else {
             if (parsedType == null) {
-                boolean var = token.kind == IDENTIFIER && (token.name() == names.val || token.name() == names.var);
-                e = unannotatedType(allowVar, TYPE | NOLAMBDA);
+                boolean var = token.kind == IDENTIFIER && typeNameRequiresInference(token.name());
+                e = unannotatedType(allowLocalVarsTypeInference, TYPE | NOLAMBDA);
                 if (var) {
                     e = null;
                 }
@@ -1006,7 +1006,7 @@ public class JavacParser implements Parser {
                 JCVariableDecl var = toP(F.at(varPos).VarDef(mods, name, e, null));
                 if (e == null) {
                     var.startPos = pos;
-                    if (var.name == names.underscore && !allowVar) {
+                    if (var.name == names.underscore && !allowLocalVarsTypeInference) {
                         log.error(DiagnosticFlag.SYNTAX, varPos, Errors.UseOfUnderscoreNotAllowed);
                     }
                 }
@@ -1032,13 +1032,13 @@ public class JavacParser implements Parser {
         return parseType(false);
     }
 
-    public JCExpression parseType(boolean allowVar) {
+    public JCExpression parseType(boolean allowLocalVarsTypeInference) {
         List<JCAnnotation> annotations = typeAnnotationsOpt();
-        return parseType(allowVar, annotations);
+        return parseType(allowLocalVarsTypeInference, annotations);
     }
 
-    public JCExpression parseType(boolean allowVar, List<JCAnnotation> annotations) {
-        JCExpression result = unannotatedType(allowVar);
+    public JCExpression parseType(boolean allowLocalVarsTypeInference, List<JCAnnotation> annotations) {
+        JCExpression result = unannotatedType(allowLocalVarsTypeInference);
 
         if (annotations.nonEmpty()) {
             result = insertAnnotationsToMostInner(result, annotations, false);
@@ -1061,22 +1061,26 @@ public class JavacParser implements Parser {
         return t;
     }
 
-    public JCExpression unannotatedType(boolean allowVar) {
-        return unannotatedType(allowVar, TYPE);
+    public JCExpression unannotatedType(boolean allowLocalVarsTypeInference) {
+        return unannotatedType(allowLocalVarsTypeInference, TYPE);
     }
 
-    public JCExpression unannotatedType(boolean allowVar, int newmode) {
+    public JCExpression unannotatedType(boolean allowLocalVarsTypeInference, int newmode) {
         JCExpression result = term(newmode);
-        Name restrictedTypeName = restrictedTypeName(result, !allowVar);
+        Name restrictedTypeName = restrictedTypeName(result, !allowLocalVarsTypeInference);
 
-        if (restrictedTypeName != null && (!allowVar || (restrictedTypeName != names.var && restrictedTypeName != names.val))) {
+        if (restrictedTypeName != null && (!allowLocalVarsTypeInference || (!typeNameRequiresInference(restrictedTypeName)))) {
             syntaxError(result.pos, Errors.RestrictedTypeNotAllowedHere(restrictedTypeName));
         }
 
         return result;
     }
 
-
+    /** Checks whether the type name of a local variable requires type inference.
+     */
+    private boolean typeNameRequiresInference(Name name) {
+        return name == names.var || name == names.val;
+    }
 
     protected JCExpression term(int newmode) {
         int prevmode = mode;
@@ -3796,7 +3800,7 @@ public class JavacParser implements Parser {
         if (elemType.hasTag(IDENT)) {
             Name typeName = ((JCIdent) elemType).name;
             if (restrictedTypeNameStartingAtSource(typeName, pos, !compound && localDecl) != null) {
-                if (typeName != names.var && typeName != names.val) {
+                if (!typeNameRequiresInference(typeName)) {
                     reportSyntaxError(elemType.pos, Errors.RestrictedTypeNotAllowedHere(typeName));
                 } else if (type.hasTag(TYPEARRAY) && !compound) {
                     //error - 'var'/'val' and arrays
@@ -3835,7 +3839,7 @@ public class JavacParser implements Parser {
     }
 
     Source restrictedTypeNameStartingAtSource(Name name, int pos, boolean shouldWarn) {
-        if (name == names.var || name == names.val) {
+        if (typeNameRequiresInference(name)) {
             if (Feature.LOCAL_VARIABLE_TYPE_INFERENCE.allowedInSource(source)) {
                 return Source.JDK10;
             } else if (shouldWarn) {
@@ -3939,7 +3943,7 @@ public class JavacParser implements Parser {
         }
 
         return toP(F.at(pos).VarDef(mods, name, type, null,
-                isType && (((JCIdent)type).name == names.var || ((JCIdent)type).name == names.val)));
+                isType && typeNameRequiresInference(((JCIdent)type).name)));
     }
 
     /** Resources = Resource { ";" Resources }

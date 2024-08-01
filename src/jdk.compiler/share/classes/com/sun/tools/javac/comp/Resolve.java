@@ -2543,13 +2543,12 @@ public class Resolve {
     private Symbol checkRestrictedType(DiagnosticPosition pos, Symbol bestSoFar, Name name) {
         if (bestSoFar.kind == TYP || bestSoFar.kind == ABSENT_TYP) {
             if (allowLocalVariableTypeInference && (name.equals(names.var) || name.equals(names.val))) {
-                Name nameTypeError = name.equals(names.var) ? names.var : names.val;
-                bestSoFar = new BadRestrictedTypeError(nameTypeError);
+                bestSoFar = new BadRestrictedTypeError(name);
             } else if (name.equals(names.yield)) {
                 if (allowYieldStatement) {
-                    bestSoFar = new BadRestrictedTypeError(names.yield);
+                    bestSoFar = new BadRestrictedTypeError(name);
                 } else if (pos != null) {
-                    log.warning(pos, Warnings.IllegalRefToRestrictedType(names.yield));
+                    log.warning(pos, Warnings.IllegalRefToRestrictedType(name));
                 }
             }
         }
