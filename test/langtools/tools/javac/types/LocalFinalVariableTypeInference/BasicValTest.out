@@ -1,8 +1,11 @@
-BasicValTest.java:26:13: compiler.err.cant.infer.local.var.type: c, (compiler.misc.local.cant.infer.null)
-BasicValTest.java:31:13: compiler.err.cant.infer.local.var.type: d, (compiler.misc.local.missing.init)
-BasicValTest.java:38:9: compiler.err.cant.assign.val.to.var: final, x
-BasicValTest.java:44:9: compiler.err.cant.assign.val.to.var: final, y
-BasicValTest.java:44:13: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.String, int)
-BasicValTest.java:50:13: compiler.err.already.defined: kindname.variable, z, kindname.method, redefinition_test()
-BasicValTest.java:57:45: compiler.err.cant.assign.val.to.var: final, counter
-7 errors
+BasicValTest.java:30:13: compiler.err.cant.infer.local.var.type: c, (compiler.misc.local.cant.infer.null)
+BasicValTest.java:35:13: compiler.err.cant.infer.local.var.type: d, (compiler.misc.local.missing.init)
+BasicValTest.java:40:17: compiler.err.cant.assign.val.to.var: final, e
+BasicValTest.java:40:13: compiler.err.cant.infer.local.var.type: e, (compiler.misc.local.self.ref)
+BasicValTest.java:50:13: compiler.err.cant.infer.local.var.type: g, (compiler.misc.local.cant.infer.void)
+BasicValTest.java:62:9: compiler.err.cant.assign.val.to.var: final, x
+BasicValTest.java:68:9: compiler.err.cant.assign.val.to.var: final, y
+BasicValTest.java:68:13: compiler.err.prob.found.req: (compiler.misc.inconvertible.types: java.lang.String, int)
+BasicValTest.java:74:13: compiler.err.already.defined: kindname.variable, z, kindname.method, redefinition_test()
+BasicValTest.java:81:45: compiler.err.cant.assign.val.to.var: final, counter
+10 errors

@@ -1,0 +1,4 @@
+GenericValTest.java:12:14: compiler.err.restricted.type.not.allowed.here: val
+GenericValTest.java:13:24: compiler.err.restricted.type.not.allowed.here: val
+GenericValTest.java:14:22: compiler.err.restricted.type.not.allowed.here: val
+3 errors

@@ -3,6 +3,10 @@
  * @compile/fail/ref=BasicValTest.out -XDrawDiagnostics BasicValTest.java
  */
 
+// can be moved to test/langtools/tools/javac/lvti
+
+import java.util.List;
+
 public class BasicValTest {
     void basic_test() {
         // just use 'val'
@@ -29,7 +33,27 @@ public class BasicValTest {
         // 'val' missing initialization
         // error
         val d;
+
+
+        // 'val' is final and self reference
+        // 2 errors
+        val e = e = 1;
+
+
+        // can infer int
+        // ok
+        val f = int_test();
+
+
+        // cannot infer void
+        // error
+        val g = void_test();
     }
+
+
+    void void_test() { }
+    int int_test() { return 4; }
+
 
     void redefinition_test() {
         // try to redefine 'val' (same type)
